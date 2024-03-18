@@ -1,0 +1,20 @@
+{
+  "name": "tfgserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "Jordi Salazar",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "mongoose": "^5.13.22",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.0",
+    "slugify": "^1.6.6",
+    "validator": "^13.11.0"
+  }
+}
