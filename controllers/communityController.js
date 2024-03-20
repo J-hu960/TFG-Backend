@@ -1,4 +1,3 @@
-const { ServeCLIProgramNotFoundException } = require('ionic/lib/errors.js');
 const Community = require('../models/comunityModel.js')
 
 exports.createComunity=async(req,res,next)=>{

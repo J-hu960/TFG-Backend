@@ -1,13 +1,9 @@
-const Usuario = require('../models/usuarioModel')
-
-
+const User = require('../models/usuarioModel')
 const catchAsync = require('../utils/catchAsync.js')
 
 
 exports.getAllUsers=catchAsync(async(req,res)=>{
-    
         const users = await User.find()
-       
         res.status(200).json({ 
            status:'success', 
            requestedAt:req.requestTime,
@@ -16,14 +12,19 @@ exports.getAllUsers=catchAsync(async(req,res)=>{
                 users,                                                                                   
             } 
        })
+       
       
 })
-exports.getUser=(req,res)=>{
+exports.getUser= catchAsync(async(req,res)=>{
+
+    const user = await User.findById(req.params.id)
     res.status(500).json({
         status:'error',
-        message:'This route is not yet defined'
+        message:'This route is not yet defined',
+        data:user
     })
-}
+    console.log(user)
+})
 exports.createUser=(req,res)=>{
     res.status(500).json({
         status:'error',
