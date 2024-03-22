@@ -47,11 +47,21 @@ const userSchema = mongoose.Schema({
             message:'Las contraseñas no coinciden.'
         },
     },
+    isActive:{
+        type:Boolean,
+        default:true,
+        select:false
+    },
     passwordChangedAt:Date,
     comunidadesMiembro:[String],
     passwordResetsToken:String,
     passwordResetsExpires:Date,
     
+})
+userSchema.pre(/^find/,function(next){
+    //poitns to the current query
+    this.find({isActive:{$ne:false}})
+    next()
 })
 userSchema.pre('save',function(next){
     if(!this.isModified('password')||this.isNew) return next()

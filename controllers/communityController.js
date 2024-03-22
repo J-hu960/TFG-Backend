@@ -1,7 +1,9 @@
 const Community = require('../models/comunityModel.js')
+const catchAsync=require('../utils/catchAsync.js')
+const APIFeatures=require('../utils/apiFeatures.js')
 
-exports.createComunity=async(req,res,next)=>{
-    try {
+exports.createComunity=catchAsync(async(req,res,next)=>{
+        
         const newCommunity = await Community.create(req.body);
         res.status(201).json({
             status: 'Success',
@@ -9,20 +11,11 @@ exports.createComunity=async(req,res,next)=>{
                 community: newCommunity
             }
         });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: 'Error',
-            message: error.message,
-           
-        });
-    }
-}
-
-exports.getAllComunites=async(req,res,next)=>{
-    
-    try {
-        const communities = await Community.find()
+    } 
+)
+exports.getAllComunites=catchAsync(async(req,res,next)=>{
+        const features = new APIFeatures(Community.find(),req.query).filter().sort().limitFields().paginate()
+        const communities = await features.query
 
         res.status(200).json({
             status:'Succes',
@@ -31,18 +24,13 @@ exports.getAllComunites=async(req,res,next)=>{
                 communities,
             }
         })
-        
-    } catch (error) {
-        res.status(404).json({
-            message:'Failed'
-        })
-    }
     
-}
+})
 
-exports.getOneComunity=async(req,res,next)=>{
-    try {
-        const community = await Community.find({_id:req.params.id})
+exports.getOneComunity=catchAsync(async(req,res, next)=>{
+    
+       const features = new APIFeatures(Community.find({_id:req.params.id}),req.query).limitFields()
+        const community = await features.query
         if(!community){  res.status(404).json({
             message:'COmmunity not found'
         })}
@@ -50,18 +38,11 @@ exports.getOneComunity=async(req,res,next)=>{
             status:'Succes',
             community,
         })
-    }
         
-     catch (error) {
-        res.status(404).json({
-            message:'Failed'
-        })
-        
-    }
-} 
+} )
 
-exports.editComunity=async(req,res,next)=>{
-    try {
+exports.editComunity=catchAsync(async(req,res,next)=>{
+  
         const editedCommunity = await Community.findByIdAndUpdate(req.params.id,req.body,{
             new:true,
             runValidators:false
@@ -70,25 +51,14 @@ exports.editComunity=async(req,res,next)=>{
             status:'Succes',
             editedCommunity,
         }) 
-    } catch (error) {
-        res.status(400).json({
-            status:'Failed',
-        })
-        
-    }
-    
-}
+})
 
-exports.deleteCommunity=async(req,res,next)=>{
-    try {
+exports.deleteCommunity=catchAsync(async(req,res,next)=>{
+  
         const deletedCommunity = await Community.findByIdAndDelete(req.params.id)
         res.status(200).json({
             status:'Succes',
             deletedCommunity,
         }) 
-    } catch (error) {
-        res.status(400).json({
-            status:'Failed',
-        })  
-    }
-}
+    } )
+

@@ -7,6 +7,24 @@ const sendEmail = require('../utils/email.js')
 const { send } = require('process')
 const crypto = require('crypto')
 
+const createSendToken=(user,statusCode,res)=>{
+    const token=signToken(user._id)
+    const cookieOPtions={
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN*24*60*60*1000),
+            httpOnly:true,   //so it is not modified by the browser
+        }
+    if(process.env.NODE_ENV='production') cookieOPtions.secure=true //we must use https
+    
+    res.cookie('jwt',token,)
+    //Remove password from output
+    user.password=undefined
+    res.status(statusCode).json({
+        status:'success',
+        token,
+        data:user
+    })
+}
+
 const signToken=userId=>{
     return jwt.sign({id:userId},process.env.JWT_SECRET,{  
         expiresIn:process.env.JWT_EXPIRES_IN
@@ -22,16 +40,8 @@ exports.signUp=catchAsync(async(req,res,next)=>{
         passwordChangedAt,
         role
     })
-    const token = signToken(newUser._id)
-
-
-    res.status(201).json({
-        status:'Success',
-        token,
-        data:{
-            user:newUser
-        }
-    })
+    createSendToken(newUser,201,res)
+    
 })
 
 exports.login=catchAsync(async(req,res,next)=>{
@@ -49,13 +59,8 @@ exports.login=catchAsync(async(req,res,next)=>{
 
     } 
 
-
-    const token = signToken(user._id)
-    res.status(200).json({
-        status:'success',
-        token,
-        user,
-    })
+    createSendToken(user._id,200,res)
+  
 
 }) 
 
@@ -96,8 +101,6 @@ exports.restrictTo = (...roles)=>{
         if(!roles.includes(req.user.role)) {
             console.log(req.user)
             return next(new AppError('El usuario no tiene permisos para realizar esta accion',403))
-
-
         }
         next()
 
@@ -172,36 +175,25 @@ exports.resetPassword=async(req,res,next)=>{
     //3-Update changedPasswordAt property for the user (pre(save)) -- in usuarioModel
       
     //4-log in the user(send the token)
-
-    const token = signToken(user._id)
-    res.status(200).json({
-        status:'success',
-        token
-    })
+    createSendToken(user,200,res)
+    
 }
 
 exports.updatePassword = async(req,res,next)=>{
-
-    const user = await user.findById(req.user.id) //req.user viene de protect middleware
-    if(!user.correctPassword(req.body.password,user.password)){
+    console.log(req.user)
+    const user = await User.findById(req.user.id).select('+password') //req.user viene de protect middleware
+    console.log(user)
+    if(! await(user.correctPassword(req.body.passwordCurrent,user.password))){
         return next(new AppError('Your current password is wrong',401))
 
     }
-    user.password = req.body.password
+    user.password = req.body.newPassword
     user.passwordConfirm= req.body.passwordConfirm
     await user.save()
 
-    const token = signToken(user._id)
-
-    res.status(200).json({
-        status:'Success',
-        token,
-
-    })
-
- 
-    
- 
+    createSendToken(user,200,res)
 
 }
+
+
 
