@@ -15,7 +15,7 @@ const createSendToken=(user,statusCode,res)=>{
         }
     if(process.env.NODE_ENV='production') cookieOPtions.secure=true //we must use https
     
-    res.cookie('jwt',token,)
+    res.cookie('jwt',token)
     //Remove password from output
     user.password=undefined
     res.status(statusCode).json({
