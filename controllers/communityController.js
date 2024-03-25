@@ -19,10 +19,9 @@ exports.getAllComunites=catchAsync(async(req,res,next)=>{
 
         res.status(200).json({
             status:'Succes',
-            data:{
-                results:communities.length,
-                communities,
-            }
+            results:communities.length,
+            communities,
+            
         })
     
 })

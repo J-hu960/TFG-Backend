@@ -8,6 +8,9 @@ const xss = require('xss-clean')
 const hpp = require('hpp')
 
 const app = express();
+const cors = require('cors');
+
+app.use(cors({ origin: '*' }));
 //Security http headers
 app.use(helmet())
 
