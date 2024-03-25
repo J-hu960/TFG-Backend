@@ -5,7 +5,7 @@ const {getAllUsers,getUser,updateMe,deleteMe} = require('../controllers/usuarios
 
 const router = express.Router();
 router.post('/forgotPassword',forgotPassword)
-router.patch('/resetPassword/:token',resetPassword)
+router.patch('/resetPassword',resetPassword)
 router.post('/signup',signUp)
 router.post('/login',login)
 router.patch('/updateMyPassword',protect,updatePassword)

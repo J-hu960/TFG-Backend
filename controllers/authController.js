@@ -60,8 +60,7 @@ exports.login=catchAsync(async(req,res,next)=>{
     } 
 
     createSendToken(user._id,200,res)
-  
-
+    
 }) 
 
 
@@ -115,10 +114,11 @@ exports.forgotPassword=async(req,res,next)=>{
     }
     //2-Generate the random token
      
-    const resetUnencryptedToken = user.createRandomToken()
-     await user.save({validateBeforeSave:false}) //necesitamos guardarlo en la BBDD ya que solo lo hemos modificado en la funcion
+    const resetUnencryptedToken =  (Math.floor(Math.random() * 100000) + 1).toString()
+    user.validationCode=resetUnencryptedToken
+    await user.save({validateBeforeSave:false}) //necesitamos guardarlo en la BBDD ya que solo lo hemos modificado en la funcion
     //3-Send it via email (nodemailer )
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/usuarios/resetPassword/${resetUnencryptedToken}`
+    const resetUrl = `Tu codigo para cambiar la contraseña es: ${resetUnencryptedToken}`
 
     const message=`Forgot your password?Submit your PATCH req w your new password and passwordConfirm to: ${resetUrl},
     if you haven't, please ignore this email.`
@@ -150,19 +150,17 @@ exports.forgotPassword=async(req,res,next)=>{
 }
 
 exports.resetPassword=async(req,res,next)=>{
-    //1-Get user based on token
-    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
-
+    //1-Get user based on email
     //2-Set new password if token has not yet expired, and if there is a user
 
     const user = await User.findOne({
-        passwordResetsToken:hashedToken,
-        passwordResetsExpires: {$gt:Date.now()}
-    }) //token has not yet expired
+        email:req.body.email,
+    }) //code has not yet expired
 
     if(!user){
-        return next(new AppError('Not user found',400))
+        return next(new AppError('Not user found or validation code incorrect',400))
     }
+    
 
     user.password = req.body.password
     user.passwordConfirm = req.body.passwordConfirm
