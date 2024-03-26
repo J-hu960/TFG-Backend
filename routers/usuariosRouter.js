@@ -20,7 +20,7 @@ router.route('/').get(protect,getAllUsers)
 // .post(createUser)
 
 
-router.route('/:id').get(getUser)
+router.route('/user').get(protect,getUser)
 // .delete(deleteUser)
 module.exports=router
 

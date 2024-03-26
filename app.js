@@ -1,5 +1,6 @@
 const express=require('express');
 const comunidadesRouter = require('./routers/comunidadesRouter')
+const projectsRouter = require('./routers/projectsRouter')
 const usuariosRouter = require('./routers/usuariosRouter')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
@@ -42,6 +43,7 @@ app.use(express.static(`${__dirname}/public`))
 
 app.use('/api/v1/comunidades',comunidadesRouter)
 app.use('/api/v1/usuarios',usuariosRouter)
+app.use('/api/v1/projects',projectsRouter)
 
 
 module.exports=app

@@ -28,28 +28,23 @@ exports.deleteMe=async(req,res,next)=>{
         user:null
     })
 }
-exports.getAllUsers=catchAsync(async(req,res)=>{
+exports.getAllUsers=catchAsync(async(req,res,next)=>{
         const users = await User.find()
         res.status(200).json({ 
            status:'success', 
            requestedAt:req.requestTime,
            results:users.length,
-            data:{
-                users,                                                                                   
-            } 
+           users,                                                                                   
+        
        })
        
       
 })
-exports.getUser= catchAsync(async(req,res)=>{
-
-    const user = await User.findById(req.params.id)
-    res.status(500).json({
-        status:'error',
-        message:'This route is not yet defined',
-        data:user
-    })
-})
+exports.getUser= catchAsync(async(req,res,next)=>{
+    
+        res.status(200).json(req.user);
+    });
+    
 exports.createUser=catchAsync(async(req,res)=>{
     const nuevoUsuario  = await User.create(req.body)
     res.status(500).json({
