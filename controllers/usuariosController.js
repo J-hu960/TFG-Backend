@@ -11,9 +11,9 @@ exports.updateMe = async(req,res,next)=>{
 
     //2-Update the document
 
-    const {email,nombre} = req.body
+    const {email,nombre,descripcion} = req.body
 
-    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre},{ new:true, runValidators:true})
+    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion},{ new:true, runValidators:true})
 
     res.status(200).json({
         status:'Success',
@@ -22,7 +22,18 @@ exports.updateMe = async(req,res,next)=>{
     
 }
 exports.deleteMe=async(req,res,next)=>{
-    const updatedDeletedUSer = await User.findByIdAndUpdate(req.user.id,{isActive:false,new:true})
+
+    if( !req.body.password){
+        next(new AppError('Please provide  password',400))
+    }
+
+    const user = await User.findOne({email:req.user.email}).select('+password')
+
+    if(!(await user.correctPassword(req.body.password,user.password))){
+        return next(new AppError('Contraseña incorrecta',401))
+
+    } 
+    await User.findByIdAndDelete({_id:user._id})
     res.status(204).json({
         status:'User deleted',
         user:null

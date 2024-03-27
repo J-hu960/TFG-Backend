@@ -2,6 +2,20 @@ const Project = require('../models/projectModel.js')
 const catchAsync=require('../utils/catchAsync.js')
 const APIFeatures=require('../utils/apiFeatures.js')
 
+exports.getMyprojects=catchAsync(async(req,res,next)=>{
+    console.log(req.user.email)
+    const features = new APIFeatures(Project.find({autor:req.user.email}),req.query).filter().sort().limitFields().paginate()
+ 
+     const projects = await features.query
+     
+     res.status(200).json({
+         status:'Succes',
+         results:projects.length,
+         projects,    
+     })
+ 
+})
+
 exports.createProject=catchAsync(async(req,res,next)=>{
         
         const newProject = await Project.create(req.body);
@@ -14,18 +28,10 @@ exports.createProject=catchAsync(async(req,res,next)=>{
     } 
 )
 exports.getAllProjects=catchAsync(async(req,res,next)=>{
-    let features;
-    const {categoria,titulo} = req.query
-    if(categoria && titulo){
-         features = new APIFeatures(Project.find({categoria:categoria,titulo:titulo}),req.query).filter().sort().limitFields().paginate() 
-    }else if(categoria){
-        features = new APIFeatures(Project.find({categoria:categoria}),req.query).filter().sort().limitFields().paginate() 
-   }else if(titulo){
-    features = new APIFeatures(Project.find({titulo:titulo}),req.query).filter().sort().limitFields().paginate() 
-}
-    else{
-         features = new APIFeatures(Project.find(),req.query).filter().sort().limitFields().paginate()
-    }
+    
+   
+       const features = new APIFeatures(Project.find(),req.query).filter().sort().limitFields().paginate()
+    
         const projects = await features.query
 
         res.status(200).json({

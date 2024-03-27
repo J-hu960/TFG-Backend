@@ -40,7 +40,7 @@ exports.signUp=catchAsync(async(req,res,next)=>{
         passwordChangedAt,
         role
     })
-    createSendToken(newUser,201,res)
+    createSendToken(newUser._id,201,res)
     
 })
 
@@ -58,11 +58,8 @@ exports.login=catchAsync(async(req,res,next)=>{
         return next(new AppError('Incorrect email or password',401))
 
     } 
-
     createSendToken(user._id,200,res)
-    
 }) 
-
 
 exports.protect=catchAsync(async(req,res,next)=>{
     //1-Getting the token and check if its there
@@ -178,15 +175,15 @@ exports.resetPassword=async(req,res,next)=>{
 }
 
 exports.updatePassword = async(req,res,next)=>{
-    console.log(req.user)
-    const user = await User.findById(req.user.id).select('+password') //req.user viene de protect middleware
+    console.log(req.body.data)
+    const user = await User.findOne({_id:req.user._id}).select('+password') //req.user viene de protect middleware
     console.log(user)
-    if(! await(user.correctPassword(req.body.passwordCurrent,user.password))){
+    if(! await(user.correctPassword(req.body.data.passwordCurrent,user.password))){
         return next(new AppError('Your current password is wrong',401))
 
     }
-    user.password = req.body.newPassword
-    user.passwordConfirm= req.body.passwordConfirm
+    user.password = req.body.data.newPassword
+    user.passwordConfirm= req.body.data.passwordConfirm
     await user.save()
 
     createSendToken(user,200,res)
