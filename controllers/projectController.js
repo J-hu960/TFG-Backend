@@ -69,6 +69,30 @@ exports.editProject=catchAsync(async(req,res,next)=>{
             editedProject,
         }) 
 })
+exports.handleLikes=catchAsync(async(req,res,next)=>{
+  
+    const editedProject = await Project.findByIdAndUpdate(req.params.id,{likes:req.body.data.likes},{
+        new:true,
+        runValidators:false,
+        useFindAndModify:false
+    })
+    res.status(200).json({
+        status:'Succes',
+        editedProject,
+    }) 
+})
+exports.handleDislikes=catchAsync(async(req,res,next)=>{
+  
+    const editedProject = await Project.findByIdAndUpdate(req.params.id,{dislikes:req.body.data.dislikes},{
+        new:true,
+        runValidators:false,
+        useFindAndModify:false
+    })
+    res.status(200).json({
+        status:'Succes',
+        editedProject,
+    }) 
+})
 
 exports.deleteProject=catchAsync(async(req,res,next)=>{
   
