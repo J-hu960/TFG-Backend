@@ -17,8 +17,9 @@ exports.getMyprojects=catchAsync(async(req,res,next)=>{
 })
 
 exports.createProject=catchAsync(async(req,res,next)=>{
-        
-        const newProject = await Project.create(req.body);
+        req.body.data.newProject.createdAt= Date.now()
+        console.log(req.body.data.newProject)
+        const newProject = await Project.create(req.body.data.newProject);
         res.status(201).json({
             status: 'Success',
             data: {
@@ -58,7 +59,7 @@ exports.getOneProject=catchAsync(async(req,res, next)=>{
 
 exports.editProject=catchAsync(async(req,res,next)=>{
   
-        const editedProject = await Project.findByIdAndUpdate(req.params.id,req.body,{
+        const editedProject = await Project.findByIdAndUpdate(req.params.id,req.body.data.newProject,{
             new:true,
             runValidators:false,
             useFindAndModify:false

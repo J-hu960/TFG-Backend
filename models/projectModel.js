@@ -10,14 +10,7 @@ const projectSchema = new mongoose.Schema({
         maxlength:[40,'El titulo del proyecto no debe exceder los 40 carcteres.'],
         minlength:[3,'El titulo del proyecto debe contener almenos 3 caracteres.'],
     },
-    autor:{
-        type:String,
-        required:[true,'El proyecto debe tener un autor.'],
-        unique:false,
-        trim:true,
-        maxlength:[40,'El autor no debe exceder los 40 carcteres.'],
-        minlength:[3,'El autor del proyecto debe contener almenos 3 caracteres.'],
-    },
+    autor:String,
 
     createdAt:{
         type:Date,
@@ -34,7 +27,7 @@ const projectSchema = new mongoose.Schema({
     },
     descripcion:{
         type:String,
-        required:true,
+        required:[true,'El proyecto debe tener una descripcion'],
         maxlength:[500,'La descripción no dene superar los 500 caracteres.']
 
     },
@@ -43,15 +36,14 @@ const projectSchema = new mongoose.Schema({
         type:[String],
         default:[]
     },
+
     likes:Number,
 
     dislikes:Number,
 
-    esExito:Boolean,
+    recaudacionRecibida:Number,
 
-    meta:Number,
-
-    recaudado:Number,
+    recaudacionEsperada:Number,
     categoria:String
 
 })
