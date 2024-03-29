@@ -1,6 +1,36 @@
 const User = require('../models/usuarioModel')
 const AppError = require('../utils/appError.js')
 const catchAsync = require('../utils/catchAsync.js')
+const multer = require('multer')
+
+
+const multerStorage = multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,'public/img/users');
+       
+    },
+    filename:(req,file,cb)=>{
+        const extension = file.mimetype.split('/')[1];
+        cb(null,`${req.user.id}-${Date.now()}.${extension}`)
+    }
+})
+
+// const multerStorage = multer.memoryStorage()
+
+const multerFilter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true)
+    }else{
+        cb(new AppError('not an image, Please upload only images.',400),false)
+    }
+}
+
+
+const upload=multer({
+    storage:multerStorage,
+    fileFilter:multerFilter
+})
+exports.uploadUserPhoto=upload.single('photo')
 
 exports.updateMe = async(req,res,next)=>{
     //1-Create error POSTS a password data
@@ -12,8 +42,11 @@ exports.updateMe = async(req,res,next)=>{
     //2-Update the document
 
     const {email,nombre,descripcion} = req.body
+    if(req.file){
+        photo = req.file.filename
+    }
 
-    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion},{ new:true, runValidators:true})
+    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion,photo},{ new:true, runValidators:true})
 
     res.status(200).json({
         status:'Success',
@@ -52,7 +85,6 @@ exports.getAllUsers=catchAsync(async(req,res,next)=>{
       
 })
 exports.getUser= catchAsync(async(req,res,next)=>{
-    
         res.status(200).json(req.user);
     });
     

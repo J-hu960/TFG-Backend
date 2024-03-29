@@ -3,8 +3,8 @@ const catchAsync=require('../utils/catchAsync.js')
 const APIFeatures=require('../utils/apiFeatures.js')
 
 exports.getMyprojects=catchAsync(async(req,res,next)=>{
-    console.log(req.user.email)
-    const features = new APIFeatures(Project.find({autor:req.user.email}),req.query).filter().sort().limitFields().paginate()
+    console.log(req.user.id)
+    const features = new APIFeatures(Project.find({createdBy:req.user.id}),req.query).filter().sort().limitFields().paginate()
  
      const projects = await features.query
      

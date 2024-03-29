@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt=require('bcryptjs')
 const validate= require('validator')
 const crypto = require('crypto')
+ 
 
 
 
@@ -25,7 +26,8 @@ const userSchema = mongoose.Schema({
     },
     photo:{
         type:String,
-        required:false
+        required:false,
+        default:'default-avatar.jpg'
         
     },
     password:{

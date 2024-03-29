@@ -44,7 +44,8 @@ const projectSchema = new mongoose.Schema({
     recaudacionRecibida:Number,
 
     recaudacionEsperada:Number,
-    categoria:String
+    categoria:String,
+    createdBy:String||Number
 
 })
 
