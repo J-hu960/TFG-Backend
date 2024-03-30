@@ -46,7 +46,7 @@ exports.updateMe = async(req,res,next)=>{
         photo = req.file.filename
     }
 
-    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion,photo},{ new:true, runValidators:true})
+    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion},{ new:true, runValidators:true})
 
     res.status(200).json({
         status:'Success',

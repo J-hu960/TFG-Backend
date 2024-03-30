@@ -32,10 +32,10 @@ const projectSchema = new mongoose.Schema({
 
     },
     
-    cofinanciadores:{
-        type:[String],
-        default:[]
-    },
+    cofinanciadores:[{
+        type:mongoose.Schema.ObjectId,
+        ref:'User'
+    }],
 
     likes:Number,
 
@@ -45,8 +45,19 @@ const projectSchema = new mongoose.Schema({
 
     recaudacionEsperada:Number,
     categoria:String,
-    createdBy:String||Number
+    createdBy:{
+        type:mongoose.Schema.ObjectId,
+        ref:'User'
+    }
 
+})
+
+projectSchema.pre(/^find/,function(next){
+    this.populate({
+        path:'createdBy',
+        
+    })
+    next()
 })
 
 const Project=mongoose.model('Project',projectSchema)

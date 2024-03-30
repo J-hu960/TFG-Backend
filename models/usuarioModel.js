@@ -55,7 +55,18 @@ const userSchema = mongoose.Schema({
         select:false
     },
     passwordChangedAt:Date,
-    comunidadesMiembro:[String],
+    proyectosFinanciados:[{
+        type:mongoose.Schema.ObjectId,
+        ref:'Project'
+    }],
+    proyectosLikeados:[{
+        type:mongoose.Schema.ObjectId,
+        ref:'Project'
+    }],
+    proyectosDislikeados:[{
+        type:mongoose.Schema.ObjectId,
+        ref:'Project'
+    }],
     passwordResetsToken:String,
     passwordResetsExpires:Date,
     
