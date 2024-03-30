@@ -111,3 +111,14 @@ exports.deleteUser=catchAsync(async(req,res)=>{
         message:'This route is not yet defined'
     })
 })
+//Volem afegir el _id del proyecto (req.body.data) al array proyectosLikeados del usuario que rebem per params
+exports.likeProject=catchAsync(async(req,res)=>{ 
+
+    //1. Rebre id del proyecto
+       const projectId = req.body.data.project
+    //2. Rebre usuari and update
+    const user = User.findByIdAndUpdate({_id:req.params.id}, { $push: { proyectosLikeados: projectId } },
+        )
+
+
+})
