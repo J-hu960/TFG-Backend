@@ -22,16 +22,34 @@ exports.createProject=catchAsync(async(req,res,next)=>{
         const newProject = await Project.create(req.body.data.newProject);
         res.status(201).json({
             status: 'Success',
-            data: {
-                Project: newProject
-            }
+           Project: newProject
+            
         });
     } 
 )
 exports.getAllProjects=catchAsync(async(req,res,next)=>{
-    
-   
-       const features = new APIFeatures(Project.find(),req.query).filter().sort().limitFields().paginate()
+    let categoria=""
+    let titulo=""
+    if(req.params.categoria && req.params.categoria!==""){
+        categoria =req.params.categoria
+    } 
+    if(req.params.titulo && req.params.titulo!==""){
+        titulo =req.params.titulo
+    } 
+     
+    let features;
+    if(categoria!=="" && titulo!==""){
+        features = new APIFeatures(Project.find({categoria:categoria,titulo:titulo}),req.query).filter().sort().limitFields().paginate()
+    }else if(titulo!==""){
+        features = new APIFeatures(Project.find({titulo:titulo}),req.query).filter().sort().limitFields().paginate()
+    }
+    else if(categoria!==""){
+        features = new APIFeatures(Project.find({categoria:categoria}),req.query).filter().sort().limitFields().paginate()
+    }else{
+        features = new APIFeatures(Project.find(),req.query).filter().sort().limitFields().paginate()
+
+    }
+       
     
         const projects = await features.query
 
