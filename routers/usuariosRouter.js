@@ -1,6 +1,6 @@
 const express = require('express')
 const {signUp,login,protect,forgotPassword,resetPassword,updatePassword} = require('../controllers/authController')
-const {getAllUsers,getUser,updateMe,deleteMe,uploadUserPhoto} = require('../controllers/usuariosController')
+const {getAllUsers,getUser,updateMe,deleteMe,uploadUserPhoto,likeProject} = require('../controllers/usuariosController')
 
 
 
@@ -14,8 +14,12 @@ router.patch('/updateMe',protect,uploadUserPhoto,updateMe)
 router.delete('/deleteMe',protect,deleteMe)
 
 
+
 router.route('/').get(protect,getAllUsers)
 // .post(createUser)
+
+router.patch('/:id/',protect,likeProject)
+
 
 
 router.route('/user').get(protect,getUser)
