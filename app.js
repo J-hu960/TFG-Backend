@@ -7,6 +7,10 @@ const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const globalErrorHandler = require('./controllers/errorController');
+
+
+
 
 const app = express();
 const cors = require('cors');
@@ -44,6 +48,12 @@ app.use(express.static(`${__dirname}/public`))
 app.use('/api/v1/comunidades',comunidadesRouter)
 app.use('/api/v1/usuarios',usuariosRouter)
 app.use('/api/v1/projects',projectsRouter)
+
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  });
+  
+app.use(globalErrorHandler);
 
 
 module.exports=app

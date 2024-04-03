@@ -3,13 +3,15 @@ const {createProject,getAllProjects,getOneProject,editProject,deleteProject,getM
 const {protect,restrictTo}= require('../controllers/authController')
 const router = express.Router()
 
+
+
 router.route('/MyProjects').get(protect,getMyprojects)
 router.route('/').post(protect,createProject)
-.get(protect,getAllProjects)
+.get(getAllProjects)
 
 
-router.route('/:id/likes').patch(handleLikes)
-router.route('/:id/dislikes').patch(handleDislikes)
+router.route('/:id/likes').patch(protect,handleLikes)
+router.route('/:id/dislikes').patch(protect,handleDislikes)
 router.route('/:id')
 .get(getOneProject)
 .patch(editProject)
