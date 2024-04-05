@@ -89,7 +89,8 @@ exports.editProject=catchAsync(async(req,res,next)=>{
 })
 exports.handleLikes=catchAsync(async(req,res,next)=>{
   
-    const editedProject = await Project.findByIdAndUpdate(req.params.id,{likes:req.body.data.likes},{
+    const editedProject = await Project.findByIdAndUpdate(req.params.id,
+        { likes: req.body.data.likes },{
         new:true,
         runValidators:false,
         useFindAndModify:false

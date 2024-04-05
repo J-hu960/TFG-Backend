@@ -39,7 +39,10 @@ exports.updateMe = async(req,res,next)=>{
         return next(new AppError('Cannot reset the password here',401))
     }
 
+    //get user
+
     //2-Update the document
+    
 
     const {email,nombre,descripcion} = req.body
     if(req.file){
@@ -47,6 +50,9 @@ exports.updateMe = async(req,res,next)=>{
     }
 
     const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion},{ new:true, runValidators:true})
+
+
+   
 
     res.status(200).json({
         status:'Success',
@@ -113,12 +119,90 @@ exports.deleteUser=catchAsync(async(req,res)=>{
 })
 //Volem afegir el _id del proyecto (req.body.data) al array proyectosLikeados del usuario que rebem per params
 exports.likeProject=catchAsync(async(req,res)=>{ 
+    if(req.body.data.action==='like'){
+        try {
+            //1. Rebre id del proyecto
+                const projectId = req.body.data.proyectoLikeado
+           //2. Rebre usuari and update
+                const user = await User.findByIdAndUpdate({_id:req.user.id},
+                    { $addToSet: { proyectosLikeados: projectId },
+                    useFindAndModify:false,
+                 },
+                   
+               )
+               res.status(200).json({
+                status:'Success',
+                data:user
+            })
+               console.log(user)
+               
+            
+        } catch (error) {
+            console.log(error) 
+        }
+    }else if(req.body.data.action==='unlike'){
+        
+          const projectId = req.body.data.proyectoLikeado
+         
+          const user = await User.findByIdAndUpdate(
+            { _id: req.user.id },
+            {
+              $pull: { proyectosLikeados: projectId}, 
+              useFindAndModify: false,
+            },
+          );
+              res.status(200).json({
+               status:'Success',
+               data:user
+           })
+              console.log(user)
+              
+           
+      
 
-    //1. Rebre id del proyecto
-       const projectId = req.body.data.project
-    //2. Rebre usuari and update
-    const user = User.findByIdAndUpdate({_id:req.params.id}, { $push: { proyectosLikeados: projectId } },
-        )
+    }})
 
 
-})
+exports.dislikeProject=catchAsync(async(req,res)=>{ 
+        if(req.body.data.action==='dislike'){
+            try {
+                //1. Rebre id del proyecto
+                    const projectId = req.body.data.proyectoDislikeado
+               //2. Rebre usuari and update
+                    const user = await User.findByIdAndUpdate({_id:req.user.id},
+                        { $addToSet: { proyectosDislikeados: projectId },
+                        useFindAndModify:false,
+                     },
+                       
+                   )
+                   res.status(200).json({
+                    status:'Success',
+                    data:user
+                })
+                   console.log(user)
+                   
+                
+            } catch (error) {
+                console.log(error) 
+            }
+        }else if(req.body.data.action==='undislike'){
+            
+              const projectId = req.body.data.proyectoDilikeado
+             
+              const user = await User.findByIdAndUpdate(
+                { _id: req.user.id },
+                {
+                  $pull: { proyectosDislikeados: projectId}, 
+                  useFindAndModify: false,
+                },
+              );
+                  res.status(200).json({
+                   status:'Success',
+                   data:user
+               })
+                  console.log(user)
+                  
+               
+          
+    
+        }})

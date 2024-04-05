@@ -1,6 +1,6 @@
 const express = require('express')
 const {signUp,login,protect,forgotPassword,resetPassword,updatePassword} = require('../controllers/authController')
-const {getAllUsers,getUser,updateMe,deleteMe,uploadUserPhoto,likeProject} = require('../controllers/usuariosController')
+const {getAllUsers,getUser,updateMe,deleteMe,uploadUserPhoto,likeProject,dislikeProject} = require('../controllers/usuariosController')
 
 
 
@@ -11,6 +11,9 @@ router.post('/signup',signUp)
 router.post('/login',login)
 router.patch('/updateMyPassword',protect,updatePassword)
 router.patch('/updateMe',protect,uploadUserPhoto,updateMe)//podem fer una ruta /me i fer el delete, patch i get alla
+router.patch('/updateMyLikes',protect,likeProject)//podem fer una ruta /me i fer el delete, patch i get alla
+router.patch('/updateMyDislikes',protect,dislikeProject)//podem fer una ruta /me i fer el delete, patch i get alla
+
 router.delete('/deleteMe',protect,deleteMe)
 
 
@@ -18,7 +21,7 @@ router.delete('/deleteMe',protect,deleteMe)
 router.route('/').get(protect,getAllUsers)
 // .post(createUser)
 
-router.patch('/:id',protect,likeProject)
+// router.patch('/:id',protect,likeProject)
 
 
 
