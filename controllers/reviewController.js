@@ -38,12 +38,19 @@ exports.createReview = async(req,res,next)=>{
 }
 
 exports.getProjectReviews= async(req,res,next)=>{
-    const propjectID = req.params.idproject
-    const reviews = await Review.find({proyecto:propjectID})
-    res.status(200).json({
-        status:'Succes',
-        data:reviews
-    })
+    try {
+        const propjectID = req.params.idproject
+        const reviews = await Review.find({proyecto:propjectID})
+        res.status(200).json({
+            status:'Succes',
+            data:reviews
+        })
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+   
 }
 
 exports.deleteReview=async(req,res,next)=>{
