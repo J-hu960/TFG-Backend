@@ -34,7 +34,7 @@ exports.getAllProjects=catchAsync(async(req,res,next)=>{
         categoria =req.params.categoria
     } 
     if(req.params.titulo && req.params.titulo!==""){
-        titulo =req.params.titulo
+        titulo = new RegExp('^' + req.params.titulo, '/i'); 
     } 
      
     let features;
