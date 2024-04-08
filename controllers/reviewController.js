@@ -16,8 +16,8 @@ exports.createReview = async(req,res,next)=>{
          req.body.data.proyecto = req.params.idproject
          req.body.data.createdBy = req.body.data.userid
          const userAndPost = await Review.find({
-            proyecto:req.body.data.proyecto,
-            createdBy:req.body.data.createdBy 
+            proyecto:req.params.idproject,
+            createdBy:req.body.data.userid 
             })
         if(userAndPost.length>0){
             return new AppError('No puede poner 2 reseñas al mismo proyecto',401)
