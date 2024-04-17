@@ -2,35 +2,57 @@ const User = require('../models/usuarioModel')
 const AppError = require('../utils/appError.js')
 const catchAsync = require('../utils/catchAsync.js')
 const multer = require('multer')
-
-
 const multerStorage = multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,'public/img/users');
-       
+    destination: (req, file, cb) => {
+      cb(null, 'public/img/users');
     },
-    filename:(req,file,cb)=>{
-        const extension = file.mimetype.split('/')[1];
-        cb(null,`${req.user.id}-${Date.now()}.${extension}`)
+    filename: (req, file, cb) => {
+      const extension = file.mimetype.split('/')[1];
+      cb(null, `${req.user.id}-${Date.now()}.${extension}`);
     }
-})
-
-// const multerStorage = multer.memoryStorage()
-
-const multerFilter=(req,file,cb)=>{
-    if(file.mimetype.startsWith('image')){
-        cb(null,true)
-    }else{
-        cb(new AppError('not an image, Please upload only images.',400),false)
+  });
+  
+  const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+      cb(null, true);
+    } else {
+      cb(new AppError('Not an image. Please upload only images.', 400), false);
     }
-}
+  };
+  
+  const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+  }).single('photo');
+  
+  // Controlador para actualizar la foto de perfil del usuario
+  exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
+    // Subir la foto de perfil del usuario
+    upload(req, res, async (err) => {
+      if (err) {
+        return next(err);
+      }
+  
+      // Verificar si se ha subido una imagen
+      if (!req.file) {
+        return next(new AppError('Por favor, sube una imagen.', 400));
+      }
+  
+      try {
+        // Actualizar la foto de perfil del usuario en la base de datos
+        await User.findByIdAndUpdate(req.user.id, { photo: req.file.path });
+  
+        res.status(200).json({
+          status: 'success',
+          message: 'Foto de perfil actualizada exitosamente',
+        });
+      } catch (error) {
+        next(error);
+      }
+    });
+  });
 
 
-const upload=multer({
-    storage:multerStorage,
-    fileFilter:multerFilter
-})
-exports.uploadUserPhoto=upload.single('photo')
 
 exports.updateMe = async(req,res,next)=>{
     //1-Create error POSTS a password data
@@ -43,13 +65,14 @@ exports.updateMe = async(req,res,next)=>{
 
     //2-Update the document
     
-
+    if(req.file) console.log(req.file)
     const {email,nombre,descripcion} = req.body
+    ;let photo
     if(req.file){
         photo = req.file.filename
     }
 
-    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion},{ new:true, runValidators:true})
+    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion,photo},{ new:true, runValidators:true})
 
 
    

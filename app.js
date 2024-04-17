@@ -15,6 +15,8 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 const cors = require('cors');
 
+
+
 app.use(cors({ origin: '*' }));
 //Security http headers
 app.use(helmet())
