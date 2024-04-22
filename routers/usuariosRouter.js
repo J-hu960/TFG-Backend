@@ -9,8 +9,9 @@ router.post('/forgotPassword',forgotPassword)
 router.patch('/resetPassword',resetPassword)
 router.post('/signup',signUp)
 router.post('/login',login)
+router.patch('/upload-photo', protect, uploadUserPhoto);
 router.patch('/updateMyPassword',protect,updatePassword)
-router.patch('/updateMe',protect,uploadUserPhoto,updateMe)//podem fer una ruta /me i fer el delete, patch i get alla
+router.patch('/updateMe',protect,updateMe)//podem fer una ruta /me i fer el delete, patch i get alla
 router.patch('/updateMyLikes',protect,likeProject)//podem fer una ruta /me i fer el delete, patch i get alla
 router.patch('/updateMyDislikes',protect,dislikeProject)//podem fer una ruta /me i fer el delete, patch i get alla
 

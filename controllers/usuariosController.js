@@ -2,9 +2,10 @@ const User = require('../models/usuarioModel')
 const AppError = require('../utils/appError.js')
 const catchAsync = require('../utils/catchAsync.js')
 const multer = require('multer')
+const server = `http://192.168.1.35:8004`
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/img/users');
+      cb(null, `public/img/users`);
     },
     filename: (req, file, cb) => {
       const extension = file.mimetype.split('/')[1];
@@ -28,6 +29,7 @@ const multerStorage = multer.diskStorage({
   // Controlador para actualizar la foto de perfil del usuario
   exports.uploadUserPhoto = catchAsync(async (req, res, next) => {
     // Subir la foto de perfil del usuario
+    console.log(req.body)
     upload(req, res, async (err) => {
       if (err) {
         return next(err);
@@ -40,7 +42,9 @@ const multerStorage = multer.diskStorage({
   
       try {
         // Actualizar la foto de perfil del usuario en la base de datos
-        await User.findByIdAndUpdate(req.user.id, { photo: req.file.path });
+        const url = `${server}/${req.file.path}`;
+
+        await User.findByIdAndUpdate(req.user.id, { photo:url });
   
         res.status(200).json({
           status: 'success',
@@ -67,12 +71,13 @@ exports.updateMe = async(req,res,next)=>{
     
     if(req.file) console.log(req.file)
     const {email,nombre,descripcion} = req.body
-    ;let photo
-    if(req.file){
-        photo = req.file.filename
+    let photo;
+    if (req.file) {
+      photo = req.file.filename;
     }
 
-    const updatedUser=await User.findByIdAndUpdate(req.user.id,{email,nombre,descripcion,photo},{ new:true, runValidators:true})
+    // Actualizar los datos del usuario en la base de datos
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, { email, nombre, descripcion, photo }, { new: true, runValidators: true });
 
 
    
