@@ -3,6 +3,7 @@ const AppError = require('../utils/appError.js')
 const catchAsync = require('../utils/catchAsync.js')
 const multer = require('multer')
 const server = `http://192.168.1.35:8004`
+
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, `public/img/users`);
@@ -42,7 +43,10 @@ const multerStorage = multer.diskStorage({
   
       try {
         // Actualizar la foto de perfil del usuario en la base de datos
-        const url = `${server}/${req.file.path}`;
+        const idImg = req.file.path.split('\\')[3]
+        const imageUrl = `/public/img/users/${idImg}`;
+        const url = `${server}${imageUrl}`;
+        console.log(url)
 
         await User.findByIdAndUpdate(req.user.id, { photo:url });
   

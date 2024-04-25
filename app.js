@@ -14,6 +14,8 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 const cors = require('cors');
+app.use(express.static('public'));
+
 
 
 
